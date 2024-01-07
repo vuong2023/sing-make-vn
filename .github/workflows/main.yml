@@ -1,0 +1,74 @@
+name: Build Core ohb
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 0 * * *"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      TAGS: with_quic,with_gvisor,with_utls,with_clash_api,with_outbound_provider
+      NDK: ${{matrix.jobs.ndk}}
+      GOOS: android
+      NAME: ${{matrix.jobs.output}}
+      GOARM: '7'
+      GOARCH: ${{matrix.jobs.goarch}}
+      VERSION: ${{needs.version.outputs.version}}
+      CGO_ENABLED: '0'
+    strategy:
+      matrix:
+        goarch:
+          - '386'
+          - 'arm'
+          - 'arm64'
+          - 'amd64'
+        ndk:
+          - 'i686-linux-android34'
+          - 'armv7a-linux-androideabi34'
+          - 'aarch64-linux-android34'
+          - 'x86_64-linux-android34'
+        output:
+          - '386'
+          - 'armeabi-v7a'
+          - 'arm64-v8a'
+          - 'x86_64'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          repository: vuong2023/sing-box
+          ref: building
+      - name: delete tag
+        run: |
+         cd /home/runner/work/sing-make-vn/sing-make-vn
+         git tag -d $(git tag -l)
+      - name: Get latest go version
+        id: go_version
+        run: |
+          echo go_version=$(curl -s https://raw.githubusercontent.com/actions/go-versions/main/versions-manifest.json | grep -oE '"version": "[0-9]{1}.[0-9]{1,}(.[0-9]{1,})?"' | head -1 | cut -d':' -f2 | sed 's/ //g; s/"//g') >> $GITHUB_OUTPUT
+
+      - name: Setup Go
+        uses: actions/setup-go@v4.1.0
+        with:
+          go-version: '1.21.5'
+
+      - name: Setup NDK
+        uses: nttld/setup-ndk@v1
+        id: setup-ndk
+        with:
+          ndk-version: r26b
+          add-to-path: false
+          local-cache: false
+
+      - name: Build core
+        env:
+          CC: ${{steps.setup-ndk.outputs.ndk-path}}/toolchains/llvm/prebuilt/linux-x86_64/bin/${{env.NDK}}-clang
+        run: |
+          go build -v -trimpath -ldflags "-X 'github.com/sagernet/sing-box/constant.Version=${VERSION}' -s -w -buildid=" -tags "${TAGS}" ./cmd/sing-box
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: sing-box_core
+          path: sing-box*
