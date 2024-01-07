@@ -58,7 +58,7 @@ jobs:
           go build -v -trimpath -ldflags "-X 'github.com/sagernet/sing-box/constant.Version=${VERSION}' -s -w -buildid=" -tags "${TAGS}" ./cmd/sing-box
       - name: Create tar.gz file
         run: |
-         tar -czvf sing-box.tar.gz -C sing-box/
+         tar -czvf sing-box.tar.gz sing-box/
       - name: Upload file
         uses: actions/upload-artifact@v3
         with:
