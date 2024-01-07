@@ -19,7 +19,7 @@ jobs:
     strategy:
        matrix:
         jobs:
-          - { goarch: '386', ndk: i686-linux-android34, output: '386' }
+          - { goarch: 386, ndk: i686-linux-android34, output: 386 }
           - { goarch: arm, ndk: armv7a-linux-androideabi34, output: armeabi-v7a }
           - { goarch: arm64, ndk: aarch64-linux-android34, output: arm64-v8a }
           - { goarch: amd64, ndk: x86_64-linux-android34, output: x86_64 }
@@ -57,8 +57,9 @@ jobs:
         run: |
           go build -v -trimpath -ldflags "-X 'github.com/sagernet/sing-box/constant.Version=${VERSION}' -s -w -buildid=" -tags "${TAGS}" ./cmd/sing-box
 
-      - name: Upload artifact
+      - name: upload core
         uses: actions/upload-artifact@v3
         with:
-          name: sing-box_core
-          path: sing-box*
+          name: sing-box-${{env.VERSION}}-android-${{env.NAME}}
+          path: |
+            sing-box
