@@ -56,10 +56,11 @@ jobs:
           CC: ${{steps.setup-ndk.outputs.ndk-path}}/toolchains/llvm/prebuilt/linux-x86_64/bin/${{env.NDK}}-clang
         run: |
           go build -v -trimpath -ldflags "-X 'github.com/sagernet/sing-box/constant.Version=${VERSION}' -s -w -buildid=" -tags "${TAGS}" ./cmd/sing-box
-
-      - name: upload core
+      - name: Create tar.gz file
+        run: |
+         tar -czvf sing-box.tar.gz sing-box/
+      - name: Upload file
         uses: actions/upload-artifact@v3
         with:
-          name: sing-box${{env.VERSION}}-android-${{env.NAME}}.tar.gz
-          path: |
-            sing-box
+         name: sing-box-${{env.VERSION}}-android-${{env.NAME}}
+         path: sing-box.tar.gz
