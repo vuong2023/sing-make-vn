@@ -63,4 +63,5 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
          name: sing-box-${{env.VERSION}}-android-${{env.NAME}}
-         path: sing-box.tar.gz
+         path: |
+          sing-box
