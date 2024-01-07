@@ -59,9 +59,9 @@ jobs:
       - name: Create tar.gz file
         run: |
          tar -czvf sing-box${{env.VERSION}}-android-${{env.NAME}}.tar.gz sing-box/
-      - name: Upload file
-        uses: actions/upload-artifact@v3
+      - name: Release
+        uses: softprops/action-gh-release@v1
         with:
          name: sing-box
          path: |
-          sing-box${{env.VERSION}}-android-${{env.NAME}}.tar.gz
+          sing-box/
