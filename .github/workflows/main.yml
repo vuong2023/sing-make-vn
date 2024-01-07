@@ -64,4 +64,4 @@ jobs:
         with:
          name: sing-box-${{env.VERSION}}-android-${{env.NAME}}
          path: |
-          sing-box
+          sing-box.tar.gz
