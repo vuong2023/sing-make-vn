@@ -60,6 +60,6 @@ jobs:
       - name: upload core
         uses: actions/upload-artifact@v3
         with:
-          name: sing-box-${{env.VERSION}}-android-${{env.NAME}}.tar.gz
+          name: sing-box${{env.VERSION}}-android-${{env.NAME}}.tar.gz
           path: |
             sing-box
