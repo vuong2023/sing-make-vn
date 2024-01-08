@@ -55,6 +55,9 @@ jobs:
         env:
           CC: ${{steps.setup-ndk.outputs.ndk-path}}/toolchains/llvm/prebuilt/linux-x86_64/bin/${{env.NDK}}-clang
         run: |
+          git remote add sekai https://github.com/SagerNet/sing-box
+          git fetch sekai
+          VERSION=$(CGO_ENABLED=0 go run ./cmd/internal/read_tag)
           go build -v -trimpath -ldflags "-X 'github.com/sagernet/sing-box/constant.Version=${VERSION}' -s -w -buildid=" -tags "${TAGS}" ./cmd/sing-box
       - name: package
         run: |
@@ -64,6 +67,6 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ github.ref }}
-          file: sing-box${{env.VERSION}}-android-${{env.NAME}}.tar.gz
-          asset_name: sing-box${{env.VERSION}}-android-${{env.NAME}}.tar.gz
+          file: sing-box-${{env.VERSION}}-android-${{env.NAME}}.tar.gz
+          asset_name: sing-box-${{env.VERSION}}-android-${{env.NAME}}.tar.gz
           prerelease: true
