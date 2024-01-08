@@ -57,7 +57,6 @@ jobs:
         run: |
           git remote add sekai https://github.com/SagerNet/sing-box
           git fetch sekai
-          VERSION=$(go run ./cmd/internal/read_tag)
           go build -v -trimpath -ldflags "-X 'github.com/sagernet/sing-box/constant.Version=${VERSION}' -s -w -buildid=" -tags "${TAGS}" ./cmd/sing-box
       - name: package
         run: |
