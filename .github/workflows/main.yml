@@ -56,12 +56,14 @@ jobs:
           CC: ${{steps.setup-ndk.outputs.ndk-path}}/toolchains/llvm/prebuilt/linux-x86_64/bin/${{env.NDK}}-clang
         run: |
           go build -v -trimpath -ldflags "-X 'github.com/sagernet/sing-box/constant.Version=${VERSION}' -s -w -buildid=" -tags "${TAGS}" ./cmd/sing-box
-      - name: Create tar.gz file
+      - name: package
         run: |
          tar -czvf sing-box${{env.VERSION}}-android-${{env.NAME}}.tar.gz sing-box/
-      - name: Release
-        uses: softprops/action-gh-release@v1
+      - name: upload
+        uses: svenstaro/upload-release-action@2.7.0
         with:
-         name: sing-box
-         path: |
-          sing-box/
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ github.ref }}
+          file: sing-box${{env.VERSION}}-android-${{env.NAME}}.tar.gz
+          asset_name: sing-box
+          prerelease: true
