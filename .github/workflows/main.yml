@@ -67,7 +67,8 @@ jobs:
      - name: Setup Go
        uses: actions/setup-go@v4.1.0
        with:
-        go-version: '1.21.5'
+        go-version: ${{steps.go_version.outputs.go_version}}
+
 
      - name: Setup NDK
        uses: nttld/setup-ndk@v1
